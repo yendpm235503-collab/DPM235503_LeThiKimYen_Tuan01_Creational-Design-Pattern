@@ -1,52 +1,37 @@
-﻿using System;
+using System;
 using System.Text;
 
-namespace DPM235503_LeThiKimYen_Tuan01_Factory_Real_CacPhuongThucThanhToan_DP
+namespace DPM235503_LeThiKimYen_Tuan01_Factory_Real_NhanVien_DP
 {
-    public interface IPhuongThucThanhToan
+    public abstract class NhanVien
     {
-        void ThanhToan(double soTien);
+        public string HoTen { get; set; }
+        public abstract void TinhLuong();
     }
 
-    public class ThanhToanTienMat : IPhuongThucThanhToan
+    public class NhanVienBanHang : NhanVien
     {
-        public void ThanhToan(double soTien) => Console.WriteLine($"[TIỀN MẶT] Thu tiền trực tiếp: {soTien:N0} VNĐ");
+        public override void TinhLuong() => Console.WriteLine($"[BÁN HÀNG] NV {HoTen}: Lương cơ bản + Doanh số bán thuốc nông dược.");
     }
 
-    public class ThanhToanChuyenKhoan : IPhuongThucThanhToan
+    public class NhanVienKho : NhanVien
     {
-        public void ThanhToan(double soTien) => Console.WriteLine($"[CHUYỂN KHOẢN BANK] Tạo mã QR ngân hàng: {soTien:N0} VNĐ");
+        public override void TinhLuong() => Console.WriteLine($"[KHO] NV {HoTen}: Lương cơ bản + Phụ cấp độc hại & bốc xếp.");
     }
 
-    public class ThanhToanGhiNo : IPhuongThucThanhToan
+    public abstract class NhanVienFactory
     {
-        public void ThanhToan(double soTien) => Console.WriteLine($"[GHI NỢ / TRẢ CHẬM] Ghi sổ công nợ đại lý: {soTien:N0} VNĐ");
+        public abstract NhanVien TaoNhanVien(string hoTen);
     }
 
-    public abstract class ThanhToanFactory
+    public class BanHangFactory : NhanVienFactory
     {
-        public abstract IPhuongThucThanhToan TaoPhuongThucThanhToan();
-
-        public void XuLyThanhToan(double soTien)
-        {
-            IPhuongThucThanhToan pttt = TaoPhuongThucThanhToan();
-            pttt.ThanhToan(soTien);
-        }
+        public override NhanVien TaoNhanVien(string hoTen) => new NhanVienBanHang { HoTen = hoTen };
     }
 
-    public class TienMatFactory : ThanhToanFactory
+    public class KhoFactory : NhanVienFactory
     {
-        public override IPhuongThucThanhToan TaoPhuongThucThanhToan() => new ThanhToanTienMat();
-    }
-
-    public class ChuyenKhoanFactory : ThanhToanFactory
-    {
-        public override IPhuongThucThanhToan TaoPhuongThucThanhToan() => new ThanhToanChuyenKhoan();
-    }
-
-    public class GhiNoFactory : ThanhToanFactory
-    {
-        public override IPhuongThucThanhToan TaoPhuongThucThanhToan() => new ThanhToanGhiNo();
+        public override NhanVien TaoNhanVien(string hoTen) => new NhanVienKho { HoTen = hoTen };
     }
 
     class Program
@@ -54,16 +39,15 @@ namespace DPM235503_LeThiKimYen_Tuan01_Factory_Real_CacPhuongThucThanhToan_DP
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine("=== QUẢN LÝ CÁC PHƯƠNG THỨC THANH TOÁN BÁN HÀNG NÔNG DƯỢC ===");
+            Console.WriteLine("=== CÔNG TY NÔNG DƯỢC AN GIANG - QUẢN LÝ NHÂN VIÊN ===");
 
-            ThanhToanFactory factory1 = new TienMatFactory();
-            factory1.XuLyThanhToan(450000);
+            NhanVienFactory f1 = new BanHangFactory();
+            NhanVien nv1 = f1.TaoNhanVien("Lê Thị Kim Yến");
+            nv1.TinhLuong();
 
-            ThanhToanFactory factory2 = new ChuyenKhoanFactory();
-            factory2.XuLyThanhToan(1200000);
-
-            ThanhToanFactory factory3 = new GhiNoFactory();
-            factory3.XuLyThanhToan(15000000);
+            NhanVienFactory f2 = new KhoFactory();
+            NhanVien nv2 = f2.TaoNhanVien("Nguyen Van A");
+            nv2.TinhLuong();
 
             Console.ReadKey();
         }
