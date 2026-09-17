@@ -1,44 +1,33 @@
-﻿using System;
+using System;
 using System.Text;
 
-namespace DPM235503_LeThiKimYen_Tuan01_Abstract_Real_XuLyDonHang_DP
+namespace DPM235503_LeThiKimYen_Tuan01_Abstract_Real_GiaoDien_DP
 {
-    public interface IHoaDon { void InHoaDon(); }
-    public class HoaDonBanSi : IHoaDon
+    public interface IButton { void Render(); }
+    public interface ITextBox { void Render(); }
+
+    public class LightButton : IButton { public void Render() => Console.WriteLine("[Nút bấm Sáng] Viền xám, nền trắng, chữ đen."); }
+    public class DarkButton : IButton { public void Render() => Console.WriteLine("[Nút bấm Tối] Viền xanh, nền đen, chữ trắng."); }
+
+    public class LightTextBox : ITextBox { public void Render() => Console.WriteLine("[Ô nhập Sáng] Nền trắng, chữ đen."); }
+    public class DarkTextBox : ITextBox { public void Render() => Console.WriteLine("[Ô nhập Tối] Nền xám đậm, chữ trắng."); }
+
+    public interface IUIFactory
     {
-        public void InHoaDon() => Console.WriteLine("[HÓA ĐƠN BÁN SỈ] Áp dụng chiết khấu đại lý & hỗ trợ phí vận chuyển.");
-    }
-    public class HoaDonBanLe : IHoaDon
-    {
-        public void InHoaDon() => Console.WriteLine("[HÓA ĐƠN BÁN LẺ] Tính theo giá niêm yết lẻ & kèm phí dịch vụ phụ.");
+        IButton CreateButton();
+        ITextBox CreateTextBox();
     }
 
-    public interface IPhieuXuatKho { void InPhieuXuat(); }
-    public class PhieuXuatKhoBanSi : IPhieuXuatKho
+    public class LightThemeFactory : IUIFactory
     {
-        public void InPhieuXuat() => Console.WriteLine("[PHIẾU XUẤT SỈ] Xuất kho theo lô lớn / container.");
-    }
-    public class PhieuXuatKhoBanLe : IPhieuXuatKho
-    {
-        public void InPhieuXuat() => Console.WriteLine("[PHIẾU XUẤT LẺ] Xuất kho lẻ theo chai / gói.");
+        public IButton CreateButton() => new LightButton();
+        public ITextBox CreateTextBox() => new LightTextBox();
     }
 
-    public interface IXuLyDonHangFactory
+    public class DarkThemeFactory : IUIFactory
     {
-        IHoaDon TaoHoaDon();
-        IPhieuXuatKho TaoPhieuXuatKho();
-    }
-
-    public class BanSiFactory : IXuLyDonHangFactory
-    {
-        public IHoaDon TaoHoaDon() => new HoaDonBanSi();
-        public IPhieuXuatKho TaoPhieuXuatKho() => new PhieuXuatKhoBanSi();
-    }
-
-    public class BanLeFactory : IXuLyDonHangFactory
-    {
-        public IHoaDon TaoHoaDon() => new HoaDonBanLe();
-        public IPhieuXuatKho TaoPhieuXuatKho() => new PhieuXuatKhoBanLe();
+        public IButton CreateButton() => new DarkButton();
+        public ITextBox CreateTextBox() => new DarkTextBox();
     }
 
     class Program
@@ -46,17 +35,17 @@ namespace DPM235503_LeThiKimYen_Tuan01_Abstract_Real_XuLyDonHang_DP
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine("=== CÔNG TY NÔNG DƯỢC AN GIANG - XỬ LÝ ĐƠN HÀNG SỈ VÀ LẺ ===");
+            Console.WriteLine("=== HỆ THỐNG GIAO DIỆN PHẦN MỀM NÔNG DƯỢC AN GIANG ===");
 
-            Console.WriteLine("\n--- ĐƠN HÀNG BÁN SỈ ---");
-            IXuLyDonHangFactory factorySi = new BanSiFactory();
-            factorySi.TaoHoaDon().InHoaDon();
-            factorySi.TaoPhieuXuatKho().InPhieuXuat();
+            Console.WriteLine("\n--- Giao diện Chế độ Sáng (Light Theme) ---");
+            IUIFactory lightFactory = new LightThemeFactory();
+            lightFactory.CreateButton().Render();
+            lightFactory.CreateTextBox().Render();
 
-            Console.WriteLine("\n--- ĐƠN HÀNG BÁN LẺ ---");
-            IXuLyDonHangFactory factoryLe = new BanLeFactory();
-            factoryLe.TaoHoaDon().InHoaDon();
-            factoryLe.TaoPhieuXuatKho().InPhieuXuat();
+            Console.WriteLine("\n--- Giao diện Chế độ Tối (Dark Theme) ---");
+            IUIFactory darkFactory = new DarkThemeFactory();
+            darkFactory.CreateButton().Render();
+            darkFactory.CreateTextBox().Render();
 
             Console.ReadKey();
         }
