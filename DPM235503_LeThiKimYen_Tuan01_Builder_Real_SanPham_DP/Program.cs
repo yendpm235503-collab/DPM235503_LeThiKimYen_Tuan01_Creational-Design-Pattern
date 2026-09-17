@@ -1,60 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Text;
 
-namespace DPM235503_LeThiKimYen_Tuan01_Builder_Real_HoaDon_DP
+namespace DPM235503_LeThiKimYen_Tuan01_Builder_Real_SanPham_DP
 {
-    public class HoaDon
+    public class SanPhamNongDuoc
     {
-        public string MaHoaDon { get; set; }
-        public List<string> DanhSachSanPham { get; set; } = new List<string>();
-        public double TienHang { get; set; }
-        public double ChiPhiVanChuyen { get; set; }
-        public double ChiPhiDichVuPhu { get; set; }
-        public double ChietKhauGiamGia { get; set; }
+        public string TenSanPham { get; set; }
+        public string HoatChatChinh { get; set; }
+        public string DungTichQuyCach { get; set; }
+        public string HuongDanSuDung { get; set; }
+        public bool CoTemChongHangGia { get; set; }
 
-        public double TongTien => TienHang + ChiPhiVanChuyen + ChiPhiDichVuPhu - ChietKhauGiamGia;
-
-        public void InHoaDon()
+        public void HienThiThongTin()
         {
-            Console.WriteLine($"\n--- HÓA ĐƠN BÁN HÀNG NÔNG DƯỢC [{MaHoaDon}] ---");
-            Console.WriteLine($"Sản phẩm: {string.Join(", ", DanhSachSanPham)}");
-            Console.WriteLine($"Tiền hàng: {TienHang:N0} VNĐ");
-            Console.WriteLine($"Phí vận chuyển: {ChiPhiVanChuyen:N0} VNĐ");
-            Console.WriteLine($"Phí dịch vụ phụ: {ChiPhiDichVuPhu:N0} VNĐ");
-            Console.WriteLine($"Chiết khấu/Giảm giá: -{ChietKhauGiamGia:N0} VNĐ");
-            Console.WriteLine($"==> TỔNG THANH TOÁN: {TongTien:N0} VNĐ");
+            Console.WriteLine($"\n--- SẢN PHẨM NÔNG DƯỢC: {TenSanPham} ---");
+            Console.WriteLine($"Hoạt chất: {HoatChatChinh}");
+            Console.WriteLine($"Quy cách: {DungTichQuyCach}");
+            Console.WriteLine($"Hướng dẫn: {HuongDanSuDung}");
+            Console.WriteLine($"Tem chống hàng giả: {(CoTemChongHangGia ? "Đã dán tem QR" : "Chưa dán")}");
         }
     }
 
-    public interface IHoaDonBuilder
+    public interface ISanPhamBuilder
     {
-        void BuildMaHoaDon(string ma);
-        void BuildTienHang(List<string> ds, double tienHang);
-        void BuildChiPhiVanChuyen(double phiVC);
-        void BuildDichVuPhu(double phiDV);
-        void BuildChietKhau(double chietKhau);
-        HoaDon GetHoaDon();
+        void SetTen(string ten);
+        void SetHoatChat(string hoatChat);
+        void SetQuyCach(string quyCach);
+        void SetHuongDan(string huongDan);
+        void AttachTemChongHangGia();
+        SanPhamNongDuoc GetSanPham();
     }
 
-    public class HoaDonBanHangBuilder : IHoaDonBuilder
+    public class SanPhamNongDuocBuilder : ISanPhamBuilder
     {
-        private HoaDon _hoaDon = new HoaDon();
+        private SanPhamNongDuoc _sp = new SanPhamNongDuoc();
 
-        public void BuildMaHoaDon(string ma) => _hoaDon.MaHoaDon = ma;
-        public void BuildTienHang(List<string> ds, double tienHang)
-        {
-            _hoaDon.DanhSachSanPham = ds;
-            _hoaDon.TienHang = tienHang;
-        }
-        public void BuildChiPhiVanChuyen(double phiVC) => _hoaDon.ChiPhiVanChuyen = phiVC;
-        public void BuildDichVuPhu(double phiDV) => _hoaDon.ChiPhiDichVuPhu = phiDV;
-        public void BuildChietKhau(double chietKhau) => _hoaDon.ChietKhauGiamGia = chietKhau;
+        public void SetTen(string ten) => _sp.TenSanPham = ten;
+        public void SetHoatChat(string hoatChat) => _sp.HoatChatChinh = hoatChat;
+        public void SetQuyCach(string quyCach) => _sp.DungTichQuyCach = quyCach;
+        public void SetHuongDan(string huongDan) => _sp.HuongDanSuDung = huongDan;
+        public void AttachTemChongHangGia() => _sp.CoTemChongHangGia = true;
 
-        public HoaDon GetHoaDon()
+        public SanPhamNongDuoc GetSanPham()
         {
-            HoaDon result = _hoaDon;
-            _hoaDon = new HoaDon();
+            SanPhamNongDuoc result = _sp;
+            _sp = new SanPhamNongDuoc();
             return result;
         }
     }
@@ -64,18 +54,17 @@ namespace DPM235503_LeThiKimYen_Tuan01_Builder_Real_HoaDon_DP
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine("=== LẬP HÓA ĐƠN BÁN HÀNG TẠI CÔNG TY NÔNG DƯỢC AN GIANG ===");
-            HoaDonBanHangBuilder builder = new HoaDonBanHangBuilder();
+            Console.WriteLine("=== TẠO SẢN PHẨM NÔNG DƯỢC VỚI BUILDER PATTERN ===");
 
-            // Hóa đơn đầy đủ các loại chi phí theo yêu cầu đề bài
-            builder.BuildMaHoaDon("HD001");
-            builder.BuildTienHang(new List<string> { "Phân bón NPK (Bao 50kg)", "Thuốc diệt cỏ An Giang" }, 2500000);
-            builder.BuildChiPhiVanChuyen(150000);
-            builder.BuildDichVuPhu(50000);
-            builder.BuildChietKhau(200000);
+            SanPhamNongDuocBuilder builder = new SanPhamNongDuocBuilder();
+            builder.SetTen("Thuốc Diệt Cỏ An Giang 500ml");
+            builder.SetHoatChat("Glyphosate Acid 480g/l");
+            builder.SetQuyCach("Chai nhựa 500ml - Tỷ lệ pha 1:500");
+            builder.SetHuongDan("Pha 50ml chế phẩm cho bình 25 lít nước, phun đều mặt lá.");
+            builder.AttachTemChongHangGia();
 
-            HoaDon hd = builder.GetHoaDon();
-            hd.InHoaDon();
+            SanPhamNongDuoc sp = builder.GetSanPham();
+            sp.HienThiThongTin();
 
             Console.ReadKey();
         }
