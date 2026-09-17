@@ -1,21 +1,21 @@
-﻿using System;
+using System;
 using System.Text;
 
-namespace DPM235503_LeThiKimYen_Tuan01_Prototype_Real_GiamGia_DP
+namespace DPM235503_LeThiKimYen_Tuan01_Prototype_Real_HoaDon_DP
 {
-    public class ChuongTrinhGiamGia
+    public class HoaDonMau
     {
-        public string MaChuongTrinh { get; set; }
-        public string TenChuongTrinh { get; set; }
-        public double TileGiamGia { get; set; }
-        public DateTime NgayBatDau { get; set; }
-        public DateTime NgayKetThuc { get; set; }
+        public string LoaiHoaDon { get; set; }
+        public double ThueVAT { get; set; }
+        public string ThongTinCongTy { get; set; }
+        public string TenKhachHang { get; set; }
+        public double TongTien { get; set; }
 
-        public ChuongTrinhGiamGia Clone() => (ChuongTrinhGiamGia)this.MemberwiseClone();
+        public HoaDonMau Clone() => (HoaDonMau)this.MemberwiseClone();
 
-        public void HienThi()
+        public void InHoaDon()
         {
-            Console.WriteLine($"[{MaChuongTrinh}] {TenChuongTrinh} | Giảm: {TileGiamGia}% | Từ {NgayBatDau:dd/MM/yyyy} đến {NgayKetThuc:dd/MM/yyyy}");
+            Console.WriteLine($"[{LoaiHoaDon}] {ThongTinCongTy} | Thuế: {ThueVAT}% | Khách: {TenKhachHang} | Tổng tiền: {TongTien:N0} VNĐ");
         }
     }
 
@@ -24,28 +24,24 @@ namespace DPM235503_LeThiKimYen_Tuan01_Prototype_Real_GiamGia_DP
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine("=== QỦAN LÝ CHƯƠNG TRÌNH GIẢM GIÁ NÔNG DƯỢC ===");
+            Console.WriteLine("=== SAO CHÉP HÓA ĐƠN MẪU TẠI CÔNG TY NÔNG DƯỢC AN GIANG ===");
 
-            ChuongTrinhGiamGia mauGiamGia = new ChuongTrinhGiamGia
+            HoaDonMau hdMau = new HoaDonMau
             {
-                MaChuongTrinh = "KM_VUAMUA_2026",
-                TenChuongTrinh = "Khuyến mãi Mùa Vụ Thu Đông",
-                TileGiamGia = 10,
-                NgayBatDau = new DateTime(2026, 9, 1),
-                NgayKetThuc = new DateTime(2026, 9, 30)
+                LoaiHoaDon = "HÓA ĐƠN BÁN LẺ",
+                ThueVAT = 8,
+                ThongTinCongTy = "Công Ty Nông Dược An Giang - Chi Nhánh Long Xuyên"
             };
 
-            Console.WriteLine("Chương trình giảm giá gốc:");
-            mauGiamGia.HienThi();
+            HoaDonMau hd1 = hdMau.Clone();
+            hd1.TenKhachHang = "Nguyễn Văn Nông";
+            hd1.TongTien = 1250000;
+            hd1.InHoaDon();
 
-            // Nhân bản và tùy chỉnh cho đối tượng Đại lý VIP
-            ChuongTrinhGiamGia giamGiaDaiLy = mauGiamGia.Clone();
-            giamGiaDaiLy.MaChuongTrinh = "KM_DAILY_VIP";
-            giamGiaDaiLy.TenChuongTrinh = "Khuyến mãi VIP dành cho Đại Lý";
-            giamGiaDaiLy.TileGiamGia = 20;
-
-            Console.WriteLine("\nChương trình giảm giá sau khi nhân bản:");
-            giamGiaDaiLy.HienThi();
+            HoaDonMau hd2 = hdMau.Clone();
+            hd2.TenKhachHang = "Trần Thị Ruộng";
+            hd2.TongTien = 3400000;
+            hd2.InHoaDon();
 
             Console.ReadKey();
         }
